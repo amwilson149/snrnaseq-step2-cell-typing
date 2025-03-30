@@ -1,0 +1,214 @@
+# config file for cell typing example
+
+# random number generator setup
+#
+# directory containing exact RNG state
+# file from our analysis run
+analysis_rng_state_dir: 'random_state_files'
+# qc and preprocessing RNG state file
+# from our analysis run
+analysis_rng_state_fn__01_preproc: 'numpy_random_state_post_01_preprocess__AW_2023_04_25.pkl'
+#
+# directory containing RNG state files
+rng_state_dir: 'random_state_files'
+# qc and preprocessing RNG state file names
+rng_state_fn__01_preproc: 'numpy_random_state_post_01_preprocess.pkl'
+# cell typing RNG state file names
+rng_state_fn__02_ct__01: 'numpy_random_state_post_01__01_ct_to_leiden.pkl'
+rng_state_fn__02_ct__02: 'numpy_random_state_post_01__02_ct_subclust.pkl'
+rng_state_fn__02_ct__03: 'numpy_random_state_post_01__03_ct_to_refined_subclust.pkl'
+
+# sequencing dataset setup
+#
+# original input data parent dir
+# note: all the directories below are defined
+# relative to some root directory. the full
+# path to this root directory will be identified
+# upon the first run of this script and
+# appended to the bottom of this config file
+data_parent_dir: 'data'
+
+# output file setup
+#
+# output parent directory
+out_parent_dir: 'results'
+# preprocessing output file locations
+post_qc_preproc_data_dir: '01r__preprocessed_non_ct_expr_dat'
+# cell typing output file locations
+cell_typing_data_dir: '02r__cell_typed_expr_dat'
+
+# preprocessing expression data
+# file names
+#
+# post-QC and -preprocessing
+post_qc_preproc_data_fn: 'batch__1thr5__all_human_anndata_qc_batch_corr_preprocessing.h5ad'
+
+# cell type marker gene database
+# file information
+#
+# marker gene database directory (relative to root directory)
+mg_db_dir: 'data/marker_gene_database'
+# marker gene database file
+mg_db_fn: 'marker_gene_db__AW_2022_11_03.csv'
+# name of accompanying file in the same directory
+# as the marker gene database that maps cell types
+# to standardized, more general cell type categories
+# to help with manual cluster cell type validation
+ct_col_ct_fn: 'sc_type_to_collapsed_cell_type_mapping__AW_2022_11_29.csv'
+
+
+# k-fold cross-validation setup
+#
+# k-fold cross-validation n fold info directory (relative to root)
+kfcv_n_fold_log_dir: 'results/k_fold_cv_log'
+# cell typing k-fold cross-validation log files
+n_folds_used_fn__02_ct__03: 'n_folds_used__02_ct__03.txt'
+n_folds_used_fn__02_ct__fct_maj_insp: 'n_folds_used_fn__02_ct__fct_maj_insp.txt'
+# whether to increment the suggested k
+# value by 1 (for more conservative data
+# subsetting, to boost sample size)
+do_more_conservative_k_fold_cv: True
+
+# general parameters for likelihood-based cell typing
+#
+# whether to use negative marker genes
+use_neg_marker_genes_in_llks: False
+# adjusted p-value to use for determining
+# distinguishing HVGs for each cluster (significantly
+# overexpressed vs. all other clusters)
+padj_distinguishing_HVGs: 0.01
+
+# per-iteration cell typing runs
+#
+# first step: cell typing (Pass 1)
+# input data directory (relative to root directory)
+input_data_dir__01: 'data'
+# input data file name
+input_data_fn__01: 'sample_cell_typing_expr_dat__human_SN.h5ad'
+# output data directory (relative to root)
+output_data_dir__01: 'results/02r__cell_typed_expr_dat'
+# output data file name
+output_data_fn__01: 'sample_cell_typing_expr_data__human_SN__ct_assigned.h5ad'
+# input random state directory (relative to root)
+input_rs_dir__01: 'data/random_state_files'
+# input random state file: if None, an input random seed
+# will be read in
+#input_rs_fn__01: 'numpy_random_state_post_01_preprocess__AW_2023_04_25.pkl'
+input_rs__01: 43
+# output random state directory (relative to root)
+output_rs_dir__01: 'results/random_state_files'
+# output random state file
+output_rs_fn__01: 'numpy_random_state_post_02_ct__leiden_pass_01.pkl'
+# k-fold cross-validation log file name
+n_folds_used_fn__02_ct__01: 'n_folds_used__02_ct__01.txt'
+# cluster label
+cluster_label__01: 'leiden'
+# file name tag for cluster distinguishing HVGs
+dist_HVG_list__01: 'human_SN_'
+# cluster-to-cell-type map file name
+cluster_to_ct_map_fn__01: 'cluster_to_cell_type_map__pass_01.csv'
+# cluster-to-cell-type output cluster label
+output_cluster_label__01: 'pass_01_clusters'
+#
+# first pass expression data update
+# annotated cluster-to-cell-type directory (relative to root)
+ann_cluster_to_ct_map_dir__01: 'data/cluster_to_cell_type_maps'
+# annotated cluster-to-cell-type file name
+ann_cluster_to_ct_map_fn__01: 'cluster_to_cell_type_map__pass_01__AW_2025_03_25.csv'
+#
+# first pass visualizations for manual annotation validation
+# subdirectory for visualizations (relative to cell typing output directory)
+ct_subclust_vis_dir__01: 'combined_clust_mg_plots__pass_01'
+#
+#
+#
+# second step: subclustering of selected cell type clusters (Pass 2)
+# input data directory (relative to root)
+input_data_dir__02: 'results/02r__cell_typed_expr_dat'
+# input data file name
+input_data_fn__02: 'sample_cell_typing_expr_data__human_SN__ct_assigned.h5ad'
+# output data directory (relative to root)
+output_data_dir__02: 'results/02r__cell_typed_expr_dat'
+# output data file name
+output_data_fn__02: 'sample_cell_typing_expr_data__human_SN__ct_assigned.h5ad'
+# clusters from first pass to perform subclustering on
+# this is only a subset of the cell types that were
+# subclustered in analysis
+ct_groups_to_subcluster__02:
+        - 'microglia_island'
+# subclustering hyperparameters
+sc_hyperparams__02:
+        n_hvgs: 20000
+        hvg_expression_scale_cap_val: 'None'
+        n_pcs: 25
+        leiden_res: 0.2 # 0.1 # leiden resolution set higher for downsampled sample dataset
+# input cluster label
+cluster_label__02: 'pass_01_clusters'
+# output cluster label
+output_cluster_label__02: 'pass_02_clusters'
+# input random state directory (relative to root)
+input_rs_dir__02: 'results/random_state_files'
+# input random state file
+input_rs_fn__02: 'numpy_random_state_post_02_ct__leiden_pass_01.pkl'
+# output random state directory (relative to root)
+output_rs_dir__02: 'results/random_state_files'
+# output random state file
+output_rs_fn__02: 'numpy_random_state_post_02_ct__pass_02.pkl'
+# cluster-to-cell-type output cluster label
+cluster_to_ct_map_fn__02: 'cell_type_to_refined_cell_type_map__pass_02.csv'
+#
+# second pass expression data update
+# annotated cell-type-to-refined-cell-type directory (relative to root)
+ann_cluster_to_ct_map_dir__02: 'data/cluster_to_cell_type_maps'
+# annotated cell-type-to-refined-cell-type file name
+ann_cluster_to_ct_map_fn__02: 'cell_type_to_refined_cell_type_map__pass_02__AW_2025_03_27.csv'
+#
+#
+#
+# third step: refined cluster cell type assignment (Pass 3)
+# input data directory (relative to root directory)
+input_data_dir__03: 'results/02r__cell_typed_expr_dat' 
+# input data file name
+input_data_fn__03: 'sample_cell_typing_expr_data__human_SN__ct_assigned.h5ad'
+# output data directory (relative to root)
+output_data_dir__03: 'results/02r__cell_typed_expr_dat'
+# output data file name
+output_data_fn__03: 'sample_cell_typing_expr_data__human_SN__ct_assigned.h5ad'
+# input random state directory (relative to root)
+input_rs_dir__03: 'results/random_state_files'
+# input random state file
+input_rs_fn__03: 'numpy_random_state_post_02_ct__pass_02.pkl'
+# output random state directory (relative to root)
+output_rs_dir__03: 'results/random_state_files'
+# output random state file
+output_rs_fn__03: 'numpy_random_state_post_02_ct__pass_03.pkl'
+# k-fold cross-validation log file name
+n_folds_used_fn__02_ct__03: 'n_folds_used__02_ct__03.txt'
+# cluster label
+cluster_label__03: 'pass_02_clusters'
+# file name tag for cluster distinguishing HVGs
+dist_HVG_list__03: 'human_SN_'
+per_cluster_marker_gene_list_fn_tag: 'distinguishing_HVGs__03'
+# cluster-to-cell-type map file name
+cluster_to_ct_map_fn__03: 'cluster_to_cell_type_map__pass_03.csv'
+# cluster-to-cell-type output cluster label
+output_cluster_label__03: 'pass_03_clusters'
+#
+# third pass expression data update
+# annotated cluster-to-cell-type directory (relative to root)
+ann_cluster_to_ct_map_dir__03: 'data/cluster_to_cell_type_maps'
+# annotated cluster-to-cell-type file name
+ann_cluster_to_ct_map_fn__03: 'cluster_to_cell_type_map__pass_03__AW_2025_03_27.csv'
+#
+# third pass visualizations for manual annotation validation
+# subdirectory for visualizations (relative to cell typing output directory)
+ct_subclust_vis_dir__03: 'combined_clust_mg_plots__pass_03'
+#
+#
+#
+# final step (after all desired cluster recombination and cell typing)
+# : final cell typing pass (Pass 4)
+finalized_ct_label: 'finalized_major_cell_type'
+output_data_fn__final: 'sample_cell_typing_expr_data__human_SN__ct_assigned_final.h5ad'
+
+root_dir: '/sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing'

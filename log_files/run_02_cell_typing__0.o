@@ -1,0 +1,375 @@
+Sender: LSF System <lsfadmin@lc07e24>
+Subject: Job 176587102: </sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/log_files/run_02_cell_typing__0> in cluster <chimera> Done
+
+Job </sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/log_files/run_02_cell_typing__0> was submitted from host <li04e02> by user <wilsoa28> in cluster <chimera> at Sat Mar 29 23:36:45 2025
+Job was executed on host(s) <10*lc07e24>, in queue <premium>, as user <wilsoa28> in cluster <chimera> at Sat Mar 29 23:37:31 2025
+</hpc/users/wilsoa28> was used as the home directory.
+</sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing> was used as the working directory.
+Started at Sat Mar 29 23:37:31 2025
+Terminated at Sat Mar 29 23:55:31 2025
+Results reported at Sat Mar 29 23:55:31 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -P acc_motor # project name
+#BSUB -q premium # queue name ('premium' is standard on Minerva)
+#BSUB -n 10 # number of tasks in a parallel job (also submits as a parallel job)
+#BSUB -R span[hosts=1] # resource requirements
+#BSUB -R rusage[mem=20000] # resource requirements
+#BSUB -W 10:00 # job runtime limit (HH:MM)
+#BSUB -J /sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/log_files/run_02_cell_typing__0
+#BSUB -o /sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/log_files/run_02_cell_typing__0.o
+#BSUB -e /sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/log_files/run_02_cell_typing__0.e
+#BSUB -L /bin/bash
+
+set -ev
+
+# 01. Set up environment
+# 01a. Activate conda environment
+ml anaconda3/2020.11
+ml -python
+source /hpc/packages/minerva-centos7/anaconda3/2020.11/etc/profile.d/conda.sh
+conda activate CO-cell-typing-env
+
+# 01b. Get root directory
+exec_dir=$( pwd )
+cd "${exec_dir}"
+# 01c. Define code path
+ct_dir="${exec_dir}/scripts"
+
+# 02. Set up config files
+# 02a. Specify config file path
+cfg="${exec_dir}/configs/config_cell_type.yaml"
+echo "${cfg}"
+# 02b. Add root directory to config
+# file if it does not exist in there
+# yet (meaning the script hasn't been
+# run before)
+if ! $( grep -q 'root_dir' ${cfg} ); then
+	echo "Initializing config file with current directory as root directory"
+	echo "root_dir: '${exec_dir}'" >> ${cfg}
+else
+	echo "Config file already contains root directory; proceeding"
+fi
+
+# 03. Run Pass 1: cell typing on full dataset
+# 03a. Pass 1 cell typing
+echo -e "Pass 1...."
+python "${ct_dir}/02a_assign_cell_types__kfcv.py" --config-yaml-path ${cfg} --pass-number "01"
+# 03b. Pass 1 cell typing inspection
+echo -e "Checking Pass 1 output...."
+python "${ct_dir}/02b_check_clusts_w_put_cts.py" --config-yaml-path ${cfg} --pass-number "01"
+# 03c. Pass 1 cluster putative cell type generation
+
+(... more ...)
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   416.20 sec.
+    Max Memory :                                 6757 MB
+    Average Memory :                             1033.44 MB
+    Total Requested Memory :                     200000.00 MB
+    Delta Memory :                               193243.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                36
+    Run time :                                   1080 sec.
+    Turnaround time :                            1126 sec.
+
+The output (if any) follows:
+
+/sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/configs/config_cell_type.yaml
+Initializing config file with current directory as root directory
+Pass 1....
+Processing overexpression threshold of 0.5...
+Approximate minimum sample size needed to power marker gene
+detection at alpha=0.01 for l2fc=0.5: 74
+Approximate power achieved with this sample size: 0.8075
+Computing largest powered fold size for k-fold cross-validation...
+	Number of folds returned: 2
+	Number of groups that are too small to undergo k-fold cross-validation: 0
+		Groups: []
+Performing more conservative k-fold clustering (leaving more data per computation)
+with 3 folds.
+Generating marker gene data and summary DataFrame...
+Computing log1p values...
+Running rank_genes_groups...
+Pulling DataFrame with gene ranks...
+Adding count data to DataFrame...
+Computing log1p values...
+Running rank_genes_groups...
+Pulling DataFrame with gene ranks...
+Adding count data to DataFrame...
+Computing log1p values...
+Running rank_genes_groups...
+Pulling DataFrame with gene ranks...
+Adding count data to DataFrame...
+Processing cluster 12...
+Processing cluster 16...
+Processing cluster 21...
+Processing cluster 4...
+Processing cluster 6...
+Processing cluster 7...
+Processing cluster 8...
+Processing cluster 9...
+Processing cluster 12...
+Processing cluster 16...
+Processing cluster 21...
+Processing cluster 4...
+Processing cluster 6...
+Processing cluster 7...
+Processing cluster 8...
+Processing cluster 9...
+Computing cell type log likelihoods for cluster 12...
+Computing cell type log likelihoods for cluster 16...
+Computing cell type log likelihoods for cluster 21...
+Computing cell type log likelihoods for cluster 4...
+Computing cell type log likelihoods for cluster 6...
+Computing cell type log likelihoods for cluster 7...
+Computing cell type log likelihoods for cluster 8...
+Computing cell type log likelihoods for cluster 9...
+Checking Pass 1 output....
+Importing QCed, batch-corrected, preprocessed expression data...
+Clusters with putative cell types: ['12', '16', '21', '4', '6', '7', '8', '9']
+Generating cluster putative cell types from Pass 1....
+Generating cluster-to-cell-type map for manual validation....
+Updating expression data with Pass 1 cell types....
+Producing visualizations of putative cell type marker gene expression for validation of annotated output clusters....
+Output cluster: astro_island
+Related input clusters: ['21', '6', '7']
+Collecting top 20 distinguishing HVGs per input cluster....
+
+	Distinguishing HVGs statistics for current output cluster inputs:
+	N unique distinguishing HVGs across input clusters: 1297
+	N distinguishing HVGs shared across >1 input clusters: 594
+	N distinguishing HVGs share across all input clusters: 158
+
+	Unique top-20 among input clusters:
+	['GRCh38_______________ABLIM1' 'GRCh38_______________AC005162.3'
+ 'GRCh38_______________AC023095.1' 'GRCh38_______________AC073941.1'
+ 'GRCh38_______________AC087482.1' 'GRCh38_______________AC092902.4'
+ 'GRCh38_______________AC138123.1' 'GRCh38_______________ADAMTS12'
+ 'GRCh38_______________ADCY2' 'GRCh38_______________ADM'
+ 'GRCh38_______________AL109809.5' 'GRCh38_______________AL355612.1'
+ 'GRCh38_______________AL445426.1' 'GRCh38_______________ARHGEF17'
+ 'GRCh38_______________ARMH1' 'GRCh38_______________ARSG'
+ 'GRCh38_______________CFAP221' 'GRCh38_______________DCLK1'
+ 'GRCh38_______________DDIT4' 'GRCh38_______________EFEMP1'
+ 'GRCh38_______________ETNPPL' 'GRCh38_______________FAM189A2'
+ 'GRCh38_______________FAM198B-AS1' 'GRCh38_______________FAP'
+ 'GRCh38_______________FAT3' 'GRCh38_______________FMN2'
+ 'GRCh38_______________FRMPD3' 'GRCh38_______________GABRG1'
+ 'GRCh38_______________GFRA2' 'GRCh38_______________GINS3'
+ 'GRCh38_______________GPC5' 'GRCh38_______________HPSE2'
+ 'GRCh38_______________ITGA7' 'GRCh38_______________LGR6'
+ 'GRCh38_______________LINC01088' 'GRCh38_______________LIX1-AS1'
+ 'GRCh38_______________MAPK4' 'GRCh38_______________MASP1'
+ 'GRCh38_______________MGAT4C' 'GRCh38_______________MYBPC1'
+ 'GRCh38_______________NRG3' 'GRCh38_______________OBI1-AS1'
+ 'GRCh38_______________OTX2-AS1' 'GRCh38_______________PAPLN'
+ 'GRCh38_______________PAUPAR' 'GRCh38_______________PCTP'
+ 'GRCh38_______________PHYHD1' 'GRCh38_______________PRCP'
+ 'GRCh38_______________PSD2' 'GRCh38_______________PTCHD1-AS'
+ 'GRCh38_______________RASD1' 'GRCh38_______________RFX4'
+ 'GRCh38_______________RYR3' 'GRCh38_______________SLC25A43'
+ 'GRCh38_______________SLC4A4' 'GRCh38_______________SNTA1'
+ 'GRCh38_______________SPOCD1' 'GRCh38_______________TRDN'
+ 'GRCh38_______________TRPM3' 'GRCh38_______________TXNL4B']
+	(60 total)
+	Top-20 distinguishing HVGs shared across > 1 input cluster:
+	[]
+	(0 total)
+	Top-20 distinguishing HVGs shared across all input clusters:
+	[]
+	(0 total)
+
+Output cluster: microglia_island
+Related input clusters: ['16', '4', '9']
+Collecting top 20 distinguishing HVGs per input cluster....
+
+	Distinguishing HVGs statistics for current output cluster inputs:
+	N unique distinguishing HVGs across input clusters: 1186
+	N distinguishing HVGs shared across >1 input clusters: 663
+	N distinguishing HVGs share across all input clusters: 159
+
+	Unique top-20 among input clusters:
+	['GRCh38_______________AC006230.1' 'GRCh38_______________AC025569.1'
+ 'GRCh38_______________AC079015.1' 'GRCh38_______________ADAM28'
+ 'GRCh38_______________ADGRG6' 'GRCh38_______________AL035446.2'
+ 'GRCh38_______________AL163541.1' 'GRCh38_______________AL356124.1'
+ 'GRCh38_______________APBB1IP' 'GRCh38_______________ARHGAP15'
+ 'GRCh38_______________ARHGAP24' 'GRCh38_______________B3GNT5'
+ 'GRCh38_______________C22orf34' 'GRCh38_______________CCDC26'
+ 'GRCh38_______________CR1' 'GRCh38_______________DAB2'
+ 'GRCh38_______________DOCK8' 'GRCh38_______________DRAM1'
+ 'GRCh38_______________ESR1' 'GRCh38_______________FGF13'
+ 'GRCh38_______________FGL1' 'GRCh38_______________FMN1'
+ 'GRCh38_______________FOXP2' 'GRCh38_______________FPR3'
+ 'GRCh38_______________FYB1' 'GRCh38_______________HS3ST2'
+ 'GRCh38_______________IL15' 'GRCh38_______________INPP5D'
+ 'GRCh38_______________IPCEF1' 'GRCh38_______________IRF8'
+ 'GRCh38_______________JAK3' 'GRCh38_______________KBTBD12'
+ 'GRCh38_______________LNCAROD' 'GRCh38_______________MEF2A'
+ 'GRCh38_______________MEF2C' 'GRCh38_______________MIR222HG'
+ 'GRCh38_______________MS4A4E' 'GRCh38_______________NUAK1'
+ 'GRCh38_______________PAPSS2' 'GRCh38_______________PLXNC1'
+ 'GRCh38_______________POLB' 'GRCh38_______________PRKCD'
+ 'GRCh38_______________PTPRC' 'GRCh38_______________RGS10'
+ 'GRCh38_______________RUNX1' 'GRCh38_______________S100Z'
+ 'GRCh38_______________SH3BP5' 'GRCh38_______________SIGLEC1'
+ 'GRCh38_______________SLC7A6' 'GRCh38_______________SLCO2B1'
+ 'GRCh38_______________SRGAP2' 'GRCh38_______________STK17B'
+ 'GRCh38_______________SYT6' 'GRCh38_______________TBXAS1'
+ 'GRCh38_______________TGFB1' 'GRCh38_______________TGFBI'
+ 'GRCh38_______________THBS1' 'GRCh38_______________TMIGD3'
+ 'GRCh38_______________TNFRSF10D' 'GRCh38_______________ZNF124']
+	(60 total)
+	Top-20 distinguishing HVGs shared across > 1 input cluster:
+	[]
+	(0 total)
+	Top-20 distinguishing HVGs shared across all input clusters:
+	[]
+	(0 total)
+
+Output cluster: opc_island
+Related input clusters: ['12', '8']
+Collecting top 20 distinguishing HVGs per input cluster....
+
+	Distinguishing HVGs statistics for current output cluster inputs:
+	N unique distinguishing HVGs across input clusters: 1003
+	N distinguishing HVGs shared across >1 input clusters: 259
+	N distinguishing HVGs share across all input clusters: 259
+
+	Unique top-20 among input clusters:
+	['GRCh38_______________AC013265.1' 'GRCh38_______________AC064875.1'
+ 'GRCh38_______________ADARB2' 'GRCh38_______________AJAP1'
+ 'GRCh38_______________AL512308.1' 'GRCh38_______________ATP2C2'
+ 'GRCh38_______________BCHE' 'GRCh38_______________BMPER'
+ 'GRCh38_______________BX284613.2' 'GRCh38_______________CA10'
+ 'GRCh38_______________CCSER1' 'GRCh38_______________CNTNAP5'
+ 'GRCh38_______________CSPG4' 'GRCh38_______________DPY19L2'
+ 'GRCh38_______________FGF12' 'GRCh38_______________GLRB'
+ 'GRCh38_______________GRIK2' 'GRCh38_______________GRM7'
+ 'GRCh38_______________HECW1' 'GRCh38_______________ILDR2'
+ 'GRCh38_______________KCNIP3' 'GRCh38_______________KCNMB2'
+ 'GRCh38_______________LRRTM3' 'GRCh38_______________LRRTM4'
+ 'GRCh38_______________MDGA2' 'GRCh38_______________MEG8'
+ 'GRCh38_______________MIR3681HG' 'GRCh38_______________MMP16'
+ 'GRCh38_______________NETO1' 'GRCh38_______________NXPH1'
+ 'GRCh38_______________PAX3' 'GRCh38_______________PLAAT1'
+ 'GRCh38_______________RIMS2' 'GRCh38_______________SEMA5A'
+ 'GRCh38_______________SPSB4' 'GRCh38_______________SUSD4'
+ 'GRCh38_______________TMEM132C' 'GRCh38_______________TRHDE'
+ 'GRCh38_______________WSCD1' 'GRCh38_______________XKR4']
+	(40 total)
+	Top-20 distinguishing HVGs shared across > 1 input cluster:
+	[]
+	(0 total)
+	Top-20 distinguishing HVGs shared across all input clusters:
+	[]
+	(0 total)
+
+Running Pass 2 subclustering on specified Pass 1 cell type clusters....
+Preserving current cluster label for astro_island.
+
+
+
+
+
+Running subclustering on microglia_island.
+There are 7013 nuclei in this cluster.
+Finding top 20000 highly variable genes...
+Converting a copy of hvgX matrix to float32...
+Cannot zero-center sparse matrix: converting to dense for scaling.
+
+
+Preserving current cluster label for opc_island.
+
+
+Inspecting expression of Pass 2 new subclusters....
+Importing QCed, batch-corrected, preprocessed expression data...
+Generating Pass 2 cell-type-to-refined-cell-type map for manual validation....
+Updating expression data with Pass 2 cell types....
+AnnData object with n_obs × n_vars = 18512 × 20000
+    obs: 'patient_ID', 'pool_name', 'mito_frac', 'n_umi', 'n_gene', 'leiden', 'pass_01_clusters', 'pass_02_clusters'
+    var: 'feature_type', 'genome', 'gene_id', 'n_counts_all_cells', 'n_counts_all_cells_filtered'
+    uns: 'hvg', 'leiden', 'leiden_colors', 'n_pass_nuclei_total', 'neighbors', 'umap'
+    obsm: 'X_pca', 'X_umap', 'scaledX'
+    obsp: 'connectivities', 'distances'
+
+
+updated names:
+new_obs_names
+ACAGCCGCAGACTGCC-1_T     microglia_island__sc_0
+TATCAGGGTTCCCACT-1_AN              astro_island
+ATTCTACGTTCAAACC-1_A     microglia_island__sc_1
+GTCAAACGTAGCACGA-1_AI              astro_island
+GTCAAGTTCTCTATGT-1_D     microglia_island__sc_0
+AAATGGAAGGTGGCTA-1_J                 opc_island
+CGAGGCTGTGCGTTTA-1_L                 opc_island
+GAGAAATAGCCGCACT-1_Y     microglia_island__sc_0
+TGCACGGGTTAGGGAC-1_B                 opc_island
+ACGGAAGGTCTCAGGC-1_AS    microglia_island__sc_1
+Name: pass_02_clusters, dtype: category
+Categories (6, object): ['astro_island', 'microglia_island__sc_0', 'microglia_island__sc_1',
+                         'microglia_island__sc_3', 'microglia_island__sc_4', 'opc_island']
+Pass 3....
+Processing overexpression threshold of 0.5...
+Approximate minimum sample size needed to power marker gene
+detection at alpha=0.01 for l2fc=0.5: 74
+Approximate power achieved with this sample size: 0.8102
+Computing largest powered fold size for k-fold cross-validation...
+	Number of folds returned: 2
+	Number of groups that are too small to undergo k-fold cross-validation: 0
+		Groups: []
+Performing more conservative k-fold clustering (leaving more data per computation)
+with 3 folds.
+Generating marker gene data and summary DataFrame...
+Computing log1p values...
+Running rank_genes_groups...
+Pulling DataFrame with gene ranks...
+Adding count data to DataFrame...
+Computing log1p values...
+Running rank_genes_groups...
+Pulling DataFrame with gene ranks...
+Adding count data to DataFrame...
+Computing log1p values...
+Running rank_genes_groups...
+Pulling DataFrame with gene ranks...
+Adding count data to DataFrame...
+Processing cluster astro_island...
+Processing cluster microglia_island__sc_0...
+Processing cluster microglia_island__sc_1...
+Processing cluster microglia_island__sc_3...
+Processing cluster microglia_island__sc_4...
+Processing cluster opc_island...
+Processing cluster astro_island...
+Processing cluster microglia_island__sc_0...
+Processing cluster microglia_island__sc_1...
+Processing cluster microglia_island__sc_3...
+Processing cluster microglia_island__sc_4...
+Processing cluster opc_island...
+Computing cell type log likelihoods for cluster astro_island...
+Computing cell type log likelihoods for cluster microglia_island__sc_0...
+Computing cell type log likelihoods for cluster microglia_island__sc_1...
+Computing cell type log likelihoods for cluster microglia_island__sc_3...
+Computing cell type log likelihoods for cluster microglia_island__sc_4...
+Computing cell type log likelihoods for cluster opc_island...
+Checking Pass 3 output....
+Importing QCed, batch-corrected, preprocessed expression data...
+Clusters with putative cell types: ['astro_island', 'microglia_island__sc_0', 'microglia_island__sc_1', 'microglia_island__sc_3', 'microglia_island__sc_4', 'opc_island']
+Generating cluster putative cell types from Pass 3....
+Generating cluster-to-cell-type map for manual validation....
+Updating expression data with Pass 3 cell types....
+
+
+PS:
+
+Read file </sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing/log_files/run_02_cell_typing__0.e> for stderr output of this job.
+
