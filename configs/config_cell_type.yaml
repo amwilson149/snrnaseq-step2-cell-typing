@@ -211,4 +211,3 @@ ct_subclust_vis_dir__03: 'combined_clust_mg_plots__pass_03'
 finalized_ct_label: 'finalized_major_cell_type'
 output_data_fn__final: 'sample_cell_typing_expr_data__human_SN__ct_assigned_final.h5ad'
 
-root_dir: '/sc/arion/projects/motor/WILSOA28/demuxlet_analysis/snrnaseq__02_cell_typing'
